@@ -1,11 +1,31 @@
 def carica_da_file(file_path):
     """Carica i libri dal file"""
-    # TODO
+    f= open(file_path, "r", encoding="utf-8")
+    righe = f.readlines()
+    biblioteca = []
+    for riga in righe:
+        print(riga)
+        campi = riga.rstrip('\n').split(',')
+        print(campi)
+        if len(campi) == 5:
+            record= {
+                'titolo': campi[0],
+            'autore': campi[1],
+            'anno': campi[2],
+            'pagine': campi[3],
+            'sezione': campi[4],
+        }
+            biblioteca.append(record)
+        f.close()
+    print(biblioteca)
+    return biblioteca
 
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
-    # TODO
+    f = open(file_path, 'w', encoding = 'utf-8')
+    f.writelines
+
 
 
 def cerca_libro(biblioteca, titolo):
