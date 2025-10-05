@@ -1,41 +1,97 @@
+import csv
+
+
 def carica_da_file(file_path):
     """Carica i libri dal file"""
-    f= open(file_path, "r", encoding="utf-8")
-    righe = f.readlines()
-    biblioteca = []
-    for riga in righe:
-        print(riga)
-        campi = riga.rstrip('\n').split(',')
-        print(campi)
-        if len(campi) == 5:
-            record= {
-                'titolo': campi[0],
-            'autore': campi[1],
-            'anno': campi[2],
-            'pagine': campi[3],
-            'sezione': campi[4],
-        }
-            biblioteca.append(record)
+    try:
+        with open(file_path, "r", encoding = "utf-8") as f:
+            righe = f.readlines()
         f.close()
-    print(biblioteca)
-    return biblioteca
+        n_sezioni = int(righe[0].strip())
+        biblioteca = []
+        for i in range(n_sezioni):
+            biblioteca.append([])
+        for riga in righe[1:]: #salto la prima riga
+            print(riga)
+            campi = riga.rstrip('\n').split(',')
+            print(campi)
+            if len(campi) == 5:
+                record= {
+                'titolo': campi[0],
+                'autore': campi[1],
+                'anno': int(campi[2]),
+                'pagine': int(campi[3]),
+                'sezione': int(campi[4]),
+                }
+                sezione = record['sezione']
+                if 1<= sezione <= n_sezioni:
+                     biblioteca[sezione-1].append(record)
+        print("Biblioteca caricata correttamente")
+        return biblioteca
+
+    except FileNotFoundError:
+        print("File non trovato")
+        return None
+
+
+
 
 
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
-    f = open(file_path, 'w', encoding = 'utf-8')
-    f.writelines
+    for sezione_libri in biblioteca:
+        for libro in sezione_libri:
+            if libro['titolo'].strip().lower()== titolo.strip().lower():
+                print('ERRORE: titolo già presente nella biblioteca')
+                return None
+        if sezione <1 or sezione>len(biblioteca):
+                print('ERRORE: sezioni non trovato')
+                return None
+        nuovo_libro = {
+                'titolo': titolo,
+                'autore': autore,
+                'anno': anno,
+                'pagine': pagine,
+                'sezione': sezione,
+            }
+    biblioteca[sezione-1].append(nuovo_libro)
+    try:
+        with open(file_path, "a", encoding = 'utf-8', newline= '') as file:
+            writer = csv.writer(file)
+            writer.writerow([titolo, autore, anno, pagine, sezione])
+        return nuovo_libro
+    except FileNotFoundError:
+        print("File non trovato")
+        return None
+    except Exception as e:
+        print(f"Errore durante l'aggiornamento del file: {e}")
+        return None
+
 
 
 
 def cerca_libro(biblioteca, titolo):
     """Cerca un libro nella biblioteca dato il titolo"""
-    # TODO
+    for sezione_libri in biblioteca:
+        for libro in sezione_libri:
+            if libro['titolo'].strip().lower()== titolo.strip().lower():
+                return f"{libro['titolo']},{libro['autore']}, {libro['anno']}, {libro['pagine']}, {libro['sezione']}"
+        return None
+
 
 
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
     """Ordina i titoli di una data sezione della biblioteca in ordine alfabetico"""
-    # TODO
+    if not(1<= sezione <= len(biblioteca)):
+        print("ERRORE: sezione non trovata")
+        return None
+
+    sezione_libri = biblioteca[sezione-1]
+    titoli= [] #lista vuota
+    for libro in sezione_libri:
+        titoli.append(libro["titolo"])
+    titoli.sort()
+    return titoli
 
 
 def main():
