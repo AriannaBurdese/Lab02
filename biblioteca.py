@@ -10,7 +10,7 @@ def carica_da_file(file_path):
         n_sezioni = int(righe[0].strip())
         biblioteca = []
         for i in range(n_sezioni):
-            biblioteca.append([])
+            biblioteca.append([]) #creo lista di liste
         for riga in righe[1:]: #salto la prima riga
             print(riga)
             campi = riga.rstrip('\n').split(',')
@@ -34,9 +34,6 @@ def carica_da_file(file_path):
         return None
 
 
-
-
-
 def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path):
     """Aggiunge un libro nella biblioteca"""
     for sezione_libri in biblioteca:
@@ -45,7 +42,7 @@ def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
                 print('ERRORE: titolo già presente nella biblioteca')
                 return None
         if sezione <1 or sezione>len(biblioteca):
-                print('ERRORE: sezioni non trovato')
+                print('ERRORE: sezioni non trovate')
                 return None
         nuovo_libro = {
                 'titolo': titolo,
@@ -57,17 +54,11 @@ def aggiungi_libro(biblioteca, titolo, autore, anno, pagine, sezione, file_path)
     biblioteca[sezione-1].append(nuovo_libro)
     try:
         with open(file_path, "a", encoding = 'utf-8', newline= '') as file:
-            writer = csv.writer(file)
-            writer.writerow([titolo, autore, anno, pagine, sezione])
+            file.write(f"{titolo},{autore},{anno},{pagine},{sezione}\n")
         return nuovo_libro
     except FileNotFoundError:
         print("File non trovato")
         return None
-    except Exception as e:
-        print(f"Errore durante l'aggiornamento del file: {e}")
-        return None
-
-
 
 
 def cerca_libro(biblioteca, titolo):
@@ -76,8 +67,7 @@ def cerca_libro(biblioteca, titolo):
         for libro in sezione_libri:
             if libro['titolo'].strip().lower()== titolo.strip().lower():
                 return f"{libro['titolo']},{libro['autore']}, {libro['anno']}, {libro['pagine']}, {libro['sezione']}"
-        return None
-
+    return None
 
 
 def elenco_libri_sezione_per_titolo(biblioteca, sezione):
